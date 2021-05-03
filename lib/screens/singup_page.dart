@@ -29,6 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
   User user = User();
   final _formStateSingUp = GlobalKey<FormState>();
   bool isLoading = false;
+  bool absorbing = false;
 
   Future<void> _onSignUp() async {
     if (!_formStateSingUp.currentState.validate()) {
@@ -37,6 +38,7 @@ class _SignUpPageState extends State<SignUpPage> {
     _formStateSingUp.currentState.save();
     setState(() {
       isLoading = true;
+      absorbing = true;
     });
     await AuthServise()
         .singUp(
@@ -54,18 +56,35 @@ class _SignUpPageState extends State<SignUpPage> {
         Navigator.of(context).pushReplacementNamed(ChatRoom.routeName);
       }
     });
+
+    setState(() {
+      isLoading = false;
+      absorbing = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: isLoading
-            ? Container(
-                child: Center(
-                child: CircularProgressIndicator(),
-              ))
-            : _bodySingUp());
+    return Stack(
+      children: [
+        AbsorbPointer(
+          absorbing: absorbing,
+          child: Scaffold(backgroundColor: Colors.white, body: _bodySingUp()),
+        ),
+        if (isLoading)
+          Center(
+            child: Container(
+              height: 150,
+              width: 150,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(65),
+                  image: DecorationImage(
+                      image: NetworkImage(
+                          "https://media.giphy.com/media/3ov9k4dawRrTNyVE3K/giphy.gif"))),
+            ),
+          )
+      ],
+    );
   }
 
   _imgFromCamera(ImageSource source) async {

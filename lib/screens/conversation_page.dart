@@ -27,12 +27,16 @@ class _ChatRoomState extends State<ChatRoom> {
   ChatRoomModel chatRoomModel = ChatRoomModel();
 
   getChats() async {
+    setState(() {
+      isLoading = true;
+    });
     Constant.myName = await HelperFunctions.getUserName();
     Constant.myID = await HelperFunctions.getUserCurrentId();
     var listRoomsTo = await DataBaseService().getUserChatsTo();
     var listRoomsFrom = await DataBaseService().getUserChatsFrom();
     setState(() {
       chatRooms = listRoomsTo + listRoomsFrom;
+      isLoading = false;
     });
   }
 

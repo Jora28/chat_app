@@ -44,11 +44,7 @@ class _MyAppState extends State<MyApp> {
           ? userIsLoggedIn
               ? ChatRoom()
               : Authenticate()
-          : Container(
-              child: Center(
-                child: Authenticate(),
-              ),
-            ),
+          :  Authenticate(),
       routes: {
         ChatIngPage.routeName: (c) => ChatIngPage(),
         ChatRoom.routeName: (c) => ChatRoom(),

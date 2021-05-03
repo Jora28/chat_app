@@ -27,10 +27,10 @@ class SingInPage extends StatefulWidget {
 class _SingInPageState extends State<SingInPage> {
   String password;
   User user = User();
- 
 
   final _formStateSingIn = GlobalKey<FormState>();
   bool isLoading = false;
+  bool absorbing  =false;
 
   void _onSignIn() async {
     if (!_formStateSingIn.currentState.validate()) {
@@ -40,6 +40,7 @@ class _SingInPageState extends State<SingInPage> {
 
     setState(() {
       isLoading = true;
+      absorbing = true;
     });
 
     await AuthServise()
@@ -49,7 +50,7 @@ class _SingInPageState extends State<SingInPage> {
         var a = await DataBaseService().getCurrentUserData(user.id);
         HelperFunctions.saveLogged(true);
         HelperFunctions.saveUserCurrentId(a.id);
-        HelperFunctions.saveUserName(a.name+" "+a.surname);
+        HelperFunctions.saveUserName(a.name + " " + a.surname);
         HelperFunctions.saveUserEmail(a.email);
         Navigator.of(context).pushReplacementNamed(ChatRoom.routeName);
       } else {
@@ -59,6 +60,7 @@ class _SingInPageState extends State<SingInPage> {
 
     setState(() {
       isLoading = false;
+      absorbing = false;
     });
   }
 
@@ -66,14 +68,27 @@ class _SingInPageState extends State<SingInPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Scaffold(backgroundColor: Colors.white, body: _bodySingIn()),
+        AbsorbPointer(
+          absorbing: absorbing,
+                  child: Scaffold(
+            backgroundColor: Colors.white, body: _bodySingIn()),
+        ),
         if (isLoading)
           Center(
-            child: CircularProgressIndicator(),
+            child: Container(
+              height: 150,
+              width: 150,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(65),
+                  image: DecorationImage(
+                      image: NetworkImage(
+                          "https://media.giphy.com/media/3ov9k4dawRrTNyVE3K/giphy.gif"))),
+            ),
           )
       ],
     );
   }
+
   Widget _bodySingIn() {
     return SingleChildScrollView(
       child: Container(
