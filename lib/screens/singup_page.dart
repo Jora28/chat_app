@@ -9,6 +9,7 @@ import 'package:chat_app/service/database_servise.dart';
 import 'package:chat_app/widgets/buttons.dart';
 import 'package:chat_app/widgets/inpurs.dart';
 import 'package:chat_app/widgets/style_color.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -47,7 +48,14 @@ class _SignUpPageState extends State<SignUpPage> {
     )
         .then((value) async {
       if (value != null) {
+        await DataBaseService().uploadFile(_image);
+        String downloadURL = await FirebaseStorage.instance
+            .ref('profile_images/file_to')
+            .getDownloadURL();
+        user.profileImage = downloadURL;
+
         await DataBaseService().postUser(user);
+
         var a = await DataBaseService().getCurrentUserData(user.id);
         HelperFunctions.saveLogged(true);
         HelperFunctions.saveUserCurrentId(a.id);
@@ -173,17 +181,6 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-
-  // Future uploadImageToFirebase(BuildContext context) async {
-  //   String fileName = basename(_imageFile.path);
-  //   var firebaseStorageRef =
-  //       FirebaseStorage.instance.ref().child('uploads/$fileName');
-  //   var uploadTask = firebaseStorageRef.putFile(_imageFile);
-  //   var taskSnapshot = await uploadTask.runtimeType
-  //   taskSnapshot.ref.getDownloadURL().then(
-  //         (value) => print("Done: $value"),
-  //       );
-  // }
 
   Widget _bodySingUp() {
     return SingleChildScrollView(

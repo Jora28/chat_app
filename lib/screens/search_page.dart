@@ -146,7 +146,7 @@ class _SearchPageState extends State<SearchPage> {
                                 .pushNamed(ChatRoom.routeName);
                           }),
                       title: Text(
-                        "Good Morning,${Constant.myName}",
+                       Constant.myName,
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       backgroundColor: newColor4,

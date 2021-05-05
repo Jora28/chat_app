@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:chat_app/moodels/chatRoom.dart';
 import 'package:chat_app/moodels/user.dart' as userModel;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class DataBaseService {
   final FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore store;
+  FirebaseStorage storage = FirebaseStorage.instance;
 
   Future postUser(userModel.User model) async {
     model.id = auth.currentUser.uid;
@@ -117,10 +121,8 @@ class DataBaseService {
     return a;
   }
 
-    Future<List<ChatRoomModel>> getAllChats() async {
-    var doc = await FirebaseFirestore.instance
-        .collection("chatRoom")
-        .get();
+  Future<List<ChatRoomModel>> getAllChats() async {
+    var doc = await FirebaseFirestore.instance.collection("chatRoom").get();
     return doc.docs.map((e) {
       return ChatRoomModel.fromJson(e.data());
     }).toList();
@@ -141,10 +143,20 @@ class DataBaseService {
     var doc = await FirebaseFirestore.instance
         .collection("chatRoom")
         //.where('toId', isEqualTo: FirebaseAuth.instance.currentUser.uid)
-          .where('fromId',isEqualTo: FirebaseAuth.instance.currentUser.uid)
+        .where('fromId', isEqualTo: FirebaseAuth.instance.currentUser.uid)
         .get();
     return doc.docs.map((e) {
       return ChatRoomModel.fromJson(e.data());
     }).toList();
+  }
+
+  Future<void> uploadFile(File filePath) async {
+    try {
+      await storage
+          .ref('profile_images/file_to')
+          .putFile(filePath);
+    }catch (e) {
+     print(e.toString());
+    }
   }
 }

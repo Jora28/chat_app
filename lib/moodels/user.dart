@@ -4,8 +4,10 @@ class User {
   String name;
   String surname;
   String email;
+  String profileImage;
 
   User({
+    this.profileImage,
     this.id,
     this.email,
     this.name,
@@ -14,6 +16,7 @@ class User {
 
   factory User.fromJson(json) {
     return User(
+     // profileImage: json['profileImage'],
       name: json["name"],
       surname: json["surname"],
       email: json["email"],
@@ -25,6 +28,7 @@ class User {
     var data = Map<String, dynamic>();
 
     data["name"] = this.name;
+    data['profileImage'] = this.profileImage;
     data["surname"] = this.surname;
     data["email"] = this.email;
     data["id"] = this.id;

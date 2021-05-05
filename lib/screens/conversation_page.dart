@@ -79,6 +79,7 @@ class _ChatRoomState extends State<ChatRoom> {
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
+                  automaticallyImplyLeading: false,
                     title: Text(
                       "Good Morning,${Constant.myName}",
                       style: TextStyle(color: Colors.white, fontSize: 18),
